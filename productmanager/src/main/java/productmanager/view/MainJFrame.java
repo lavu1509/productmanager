@@ -7,6 +7,7 @@ package productmanager.view;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import productmanager.controller.MenuController;
 import productmanager.model.MenuModel;
 
@@ -204,6 +205,11 @@ public class MainJFrame extends javax.swing.JFrame {
 
         jlbExit.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jlbExit.setIcon(new javax.swing.ImageIcon("C:\\Users\\Admin\\Documents\\NetBeansProjects\\productmanager\\productmanager\\icon\\icons8_exit_sign_36px.png")); // NOI18N
+        jlbExit.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jlbExitMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jpnMenuLayout = new javax.swing.GroupLayout(jpnMenu);
         jpnMenu.setLayout(jpnMenuLayout);
@@ -273,6 +279,19 @@ public class MainJFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jlbExitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlbExitMouseClicked
+        // TODO add your handling code here:
+        
+        if(showDialogExit()){
+             System.exit(0);
+        }
+       
+    }//GEN-LAST:event_jlbExitMouseClicked
+    private boolean showDialogExit() {
+        int dialogResult = JOptionPane.showConfirmDialog(null, "Bạn muốn thoát khỏi hệ thống?",
+                "Thông báo", JOptionPane.YES_NO_OPTION);
+        return dialogResult == JOptionPane.YES_OPTION;
+    }
     /**
      * @param args the command line arguments
      */

@@ -150,7 +150,9 @@ public class ProductJPanel extends javax.swing.JPanel {
                     txtCat.setText(String.valueOf(promodel.getIdcat()));
 
                     int idp = promodel.getIdpro();
-                    procontroller.GetImageById(jlbImage, idp);
+                    
+                    procontroller.GetImageById(jlbImage, idp,txtFile);
+
                 }
 
             }
@@ -222,8 +224,10 @@ public class ProductJPanel extends javax.swing.JPanel {
         txtmota.setText("");
         txtCat.setText("");
         jlbImage.setIcon(new ImageIcon("C:\\Users\\Admin\\Documents\\NetBeansProjects\\productmanager\\productmanager\\icon\\icons8_super_mario_127px.png")); // NOI18N
-
-
+        jdinput.setCalendar(null);
+        jdout.setCalendar(null);
+        jdexpiry.setCalendar(null);
+        txtFile.setText("");
     }
 
     /**
@@ -583,15 +587,21 @@ public class ProductJPanel extends javax.swing.JPanel {
                 promodel.setOutputdate(covertDateToDateSql((Date) jdout.getDate()));
                 promodel.setExpirydate(covertDateToDateSql((Date) jdexpiry.getDate()));
                 promodel.setMota(txtmota.getText());
+                promodel.setImagePath(txtFile.getText());
                 if (showDialogAdd()) {
-                    procontroller.addProductImage(promodel, selectedImagePath);
+                    
+                        procontroller.addProductImage(promodel, selectedImagePath);
+                    
                     txtError.setText("Thêm dữ liệu thành công!");
                 }
+                reset();
                 setDataToTable();
             }
         } catch (Exception ex) {
             txtError.setText(ex.toString());
         }
+
+
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
@@ -609,9 +619,10 @@ public class ProductJPanel extends javax.swing.JPanel {
                 promodel.setOutputdate(covertDateToDateSql((Date) jdout.getDate()));
                 promodel.setExpirydate(covertDateToDateSql((Date) jdexpiry.getDate()));
                 promodel.setMota(txtmota.getText());
-
+                promodel.setImagePath(txtFile.getText());
                 if (showDialogEdit()) {
-                    procontroller.editProduct(promodel);
+                    String ImagePath = txtFile.getText();
+                    procontroller.editProduct(promodel, ImagePath);
                     txtError.setText("Xử lý cập nhật dữ liệu thành công!");
                 }
                 reset();
@@ -633,18 +644,10 @@ public class ProductJPanel extends javax.swing.JPanel {
 
                 if (showDialogDelete()) {
                     procontroller.deleteProduct(proid);
-                    txtProname.setText("");
-                    cbCategory.setSelectedIndex(0);
-                    txtId.setText("");
-                    txtPrice.setText("");
-                    txtCount.setText("");
-                    jdinput.setToolTipText("");
-                    jdout.setToolTipText("");
-                    jdexpiry.setToolTipText("");
-                    txtmota.setText("");
-
+                    
                     txtError.setText("Xóa dữ liệu thành công!");
                 }
+                reset();
                 setDataToTable();
             }
         } catch (Exception ex) {
@@ -658,8 +661,7 @@ public class ProductJPanel extends javax.swing.JPanel {
 
     private void btnUploadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUploadActionPerformed
         // TODO add your handling code here:
-        JFileChooser filechooser = new JFileChooser();
-        filechooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+        JFileChooser filechooser = new JFileChooser("C:\\Users\\Admin\\Documents\\NetBeansProjects\\productmanager\\productmanager\\upload");
 
         FileNameExtensionFilter fnef = new FileNameExtensionFilter("IMAGES", "png", "jpg", "jpeg");
         filechooser.addChoosableFileFilter(fnef);
@@ -669,6 +671,8 @@ public class ProductJPanel extends javax.swing.JPanel {
             selectedImagePath = selectedFile.getAbsolutePath();
             filename = selectedFile.getName();
             txtFile.setText(selectedImagePath);
+//            System.out.println(selectedFile +"\n"+selectedImagePath);
+
             ImageIcon ii = new ImageIcon(selectedImagePath);
 
             Image image = ii.getImage().getScaledInstance(jlbImage.getWidth(), jlbImage.getHeight(), Image.SCALE_SMOOTH);

@@ -364,6 +364,9 @@
               <Image iconType="2" name="C:\Users\Admin\Documents\NetBeansProjects\productmanager\productmanager\icon\icons8_exit_sign_36px.png"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jlbExitMouseClicked"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

@@ -33,8 +33,8 @@ public class ProductController {
         prodao.addProduct(catmodel);
     }
 
-    public void editProduct(ProductModel catmodel) {
-        prodao.updateProduct(catmodel);
+    public void editProduct(ProductModel catmodel,String path) {
+        prodao.updateProduct(catmodel,path);
     }
 
     public void deleteProduct(int idcat) {
@@ -53,7 +53,7 @@ public class ProductController {
      public void addProductImage(ProductModel promodel,String path) throws FileNotFoundException{
          prodao.addProductImage(promodel, path);
      }
-     public void GetImageById(JLabel label,int id){
-         prodao.GetImageById(label, id);
+     public void GetImageById(JLabel label,int id,JTextField txt){
+         prodao.GetImageById(label, id,txt);
      }
 }

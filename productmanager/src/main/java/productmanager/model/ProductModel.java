@@ -24,6 +24,7 @@ public class ProductModel extends CategoryModel{
     private Date expirydate;
     private String mota;
     private FileInputStream imageIn;
+    private String imagePath;
     
     public ProductModel() {
     }
@@ -98,6 +99,14 @@ public class ProductModel extends CategoryModel{
 
     public void setImageIn(FileInputStream imageIn) {
         this.imageIn = imageIn;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
    

@@ -9,6 +9,7 @@ import java.awt.Image;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,7 +53,7 @@ public class ProductDAO {
                 promodel.setOutputdate(rs.getDate("outputdate"));
                 promodel.setExpirydate(rs.getDate("expirydate"));
                 promodel.setMota(rs.getString("mota"));
-
+//                promodel.setImageIn(rs.get);
                 list.add(promodel);
             }
             ps.close();
@@ -194,12 +196,14 @@ public class ProductDAO {
         }
     }
 
-    public void updateProduct(ProductModel promodel) {
+    public void updateProduct(ProductModel promodel, String path) {
         Connection conn = JDBCConnection.getJDBCConnection();
-        String sql = "UPDATE product SET idcat=?,proname=?,price=?,soluong=?,inputdate=?,outputdate=?,expirydate=?,mota=? "
+        String sql = "UPDATE product SET idcat=?,proname=?,price=?,soluong=?,inputdate=?,outputdate=?,expirydate=?,mota=?,image=?,imagepath=? "
                 + "WHERE idpro=?";
         try {
             PreparedStatement pst = conn.prepareStatement(sql);
+            
+            InputStream is = new FileInputStream(new File(path));
 
             pst.setInt(1, promodel.getIdcat());
             pst.setString(2, promodel.getProname());
@@ -209,13 +213,17 @@ public class ProductDAO {
             pst.setDate(6, promodel.getOutputdate());
             pst.setDate(7, promodel.getExpirydate());
             pst.setString(8, promodel.getMota());
-            pst.setInt(9, promodel.getIdpro());
+            pst.setBlob(9, is);
+            pst.setString(10, promodel.getImagePath());
+            pst.setInt(11, promodel.getIdpro());
 
             pst.executeUpdate();
 
             pst.close();
             conn.close();
         } catch (SQLException ex) {
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (FileNotFoundException ex) {
             Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -242,8 +250,8 @@ public class ProductDAO {
         //INSERT INTO `product_manager`.`product` (`idcat`, `proname`, `price`, `soluong`, `inputdate`, 
         //`outputdate`, `expirydate`, `mota`) VALUES ('');
 
-        String sql = "INSERT INTO product (idcat,proname,price,soluong,inputdate,outputdate,expirydate,mota,image) "
-                + "VALUES (?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO product (idcat,proname,price,soluong,inputdate,outputdate,expirydate,mota,image,imagepath) "
+                + "VALUES (?,?,?,?,?,?,?,?,?,?)";
         try {
             InputStream is = new FileInputStream(new File(path));
             PreparedStatement pst = conn.prepareStatement(sql);
@@ -256,6 +264,7 @@ public class ProductDAO {
             pst.setDate(7, promodel.getExpirydate());
             pst.setString(8, promodel.getMota());
             pst.setBlob(9, is);
+            pst.setString(10, promodel.getImagePath());
             pst.executeUpdate();
 
             pst.close();
@@ -265,21 +274,26 @@ public class ProductDAO {
         }
     }
 
-    public void GetImageById(JLabel label,int id) {
+    public void GetImageById(JLabel label, int id,JTextField txtFile) {
         Connection cons = JDBCConnection.getJDBCConnection();
-        String sql = "select image from product where idpro = " + id;
+        String sql = "select image,imagepath from product where idpro = " + id;
         Statement st = null;
         try {
             st = cons.createStatement();
             ResultSet rs = st.executeQuery(sql);
             if (rs.next()) {
+                
                 byte[] img = rs.getBytes("image");
-
+//                System.out.println(img);
                 ImageIcon image = new ImageIcon(img);
+
                 Image im = image.getImage();
                 Image myImg = im.getScaledInstance(label.getWidth(), label.getHeight(), Image.SCALE_SMOOTH);
                 ImageIcon newImage = new ImageIcon(myImg);
                 label.setIcon(newImage);
+                
+                txtFile.setText(rs.getString("imagepath"));
+
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
